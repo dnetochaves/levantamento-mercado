@@ -1,0 +1,13 @@
+{
+  "name": "levantamento-mercado-deploy",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Config minima na raiz apenas para o Railway (Railpack) buildar e servir o app Angular de frontend/. O app em si vive em frontend/.",
+  "scripts": {
+    "build": "npm --prefix frontend ci && npm --prefix frontend run build",
+    "start": "serve -s frontend/dist/frontend/browser -l tcp://0.0.0.0:${PORT:-3000}"
+  },
+  "dependencies": {
+    "serve": "^14.2.6"
+  }
+}
