@@ -186,6 +186,28 @@ export const REPORT_DATA: ReportData = {
       'A amplitude entre R$ 900 mil e R$ 2,2 milhões reflete diretamente a incerteza sobre a área construída — a variável de maior peso no cálculo. Uma vez confirmada a metragem real (mesmo que aproximada, por planta ou medição em campo), a faixa pode ser reduzida para um intervalo de ±15–20%, adequado para negociação.',
     preliminaryWarning:
       'Natureza da estimativa: este é um valor inferido, não um dado confirmado. A área construída real do imóvel ainda não foi informada. Assim que os dados definitivos (área construída, estado detalhado, matrícula) forem recebidos, esta estimativa deve ser recalculada e substitui integralmente a que está aqui.',
+    calloutHeadline:
+      'Com os dados que já temos, seu imóvel vale entre R$ 900 mil e R$ 2,2 milhões.',
+    confidenceNote: 'Confiança: baixa — falta 1 dado crítico para estreitar essa faixa.',
+    missingData: [
+      {
+        icon: '🏗️',
+        label: 'Área construída confirmada',
+        detail:
+          'É o dado que mais estreita a faixa de valor — hoje ela varia de R$ 900 mil a R$ 2,2 milhões justamente por causa disso.',
+      },
+      {
+        icon: '🛏️',
+        label: 'Confirmação dos 9 quartos',
+        detail: 'Hoje usamos o número informado; confirmar evita recontagem por engano.',
+      },
+      {
+        icon: '📋',
+        label: 'Mais informações do imóvel',
+        detail:
+          'Fotos, estado de conservação detalhado, documentação — quanto mais completo, mais preciso o próximo cálculo.',
+      },
+    ],
   },
 
   businessPotential: {

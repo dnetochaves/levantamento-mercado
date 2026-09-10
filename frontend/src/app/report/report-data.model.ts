@@ -42,12 +42,21 @@ export interface TargetEstimateScenario {
   detail: string;
 }
 
+export interface MissingDataItem {
+  icon: string;
+  label: string;
+  detail: string;
+}
+
 export interface TargetEstimate {
   premises: TargetEstimatePremise[];
   scenarios: TargetEstimateScenario[];
   calculationNote: string;
   rangeExplanation: string;
   preliminaryWarning: string;
+  calloutHeadline: string;
+  confidenceNote: string;
+  missingData: MissingDataItem[];
 }
 
 export interface BusinessPotentialCaution {
