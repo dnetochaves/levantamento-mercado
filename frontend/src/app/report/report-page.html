@@ -1,0 +1,229 @@
+<mat-toolbar color="primary" class="report-toolbar">
+  <span class="report-toolbar__title">{{ data.reportTitle }}</span>
+</mat-toolbar>
+
+<main class="report-page">
+  <p class="report-page__subtitle">{{ data.reportSubtitle }}</p>
+  <p class="report-page__meta">{{ data.reportScope }}</p>
+  <p class="report-page__meta"><strong>Data do levantamento:</strong> {{ data.reportDate }}</p>
+  <p class="report-page__status">{{ data.reportStatus }}</p>
+
+  <mat-card class="kpi-card" appearance="outlined">
+    <mat-card-content>
+      <div class="kpi-grid">
+        @for (kpi of data.kpis; track kpi.label) {
+          <div class="kpi">
+            <span class="kpi__value">{{ kpi.value }}</span>
+            <span class="kpi__label">{{ kpi.label }}</span>
+            @if (kpi.sublabel) {
+              <span class="kpi__sublabel">{{ kpi.sublabel }}</span>
+            }
+          </div>
+        }
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <section class="target-highlights">
+    <h2>Imóvel-alvo</h2>
+    <ul>
+      @for (item of data.targetPropertyHighlights; track item) {
+        <li>{{ item }}</li>
+      }
+    </ul>
+  </section>
+
+  <mat-accordion multi class="report-accordion">
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Metodologia e fontes</mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <h3>Critérios de busca</h3>
+      <dl class="definition-list">
+        @for (c of data.methodology.criteria; track c.label) {
+          <div class="definition-list__row">
+            <dt>{{ c.label }}</dt>
+            <dd>{{ c.value }}</dd>
+          </div>
+        }
+      </dl>
+
+      <h3>Fontes consultadas</h3>
+      <ul>
+        @for (s of data.methodology.sources; track s.name) {
+          <li><strong>{{ s.name }}</strong> — {{ s.detail }}</li>
+        }
+      </ul>
+
+      <h3>Limitações declaradas</h3>
+      <ul>
+        @for (l of data.methodology.limitations; track l) {
+          <li>{{ l }}</li>
+        }
+      </ul>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Estatísticas de mercado</mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div class="stat-group">
+        <h3>{{ data.officialMarketStat.title }}</h3>
+        <ul>
+          @for (i of data.officialMarketStat.items; track i.label) {
+            <li>{{ i.label }}: <strong>{{ i.value }}</strong></li>
+          }
+        </ul>
+      </div>
+
+      <div class="stat-group stat-group--recalculated">
+        <h3>{{ data.recalculatedMarketStat.title }}</h3>
+        <ul>
+          @for (i of data.recalculatedMarketStat.items; track i.label) {
+            <li>{{ i.label }}: <strong>{{ i.value }}</strong></li>
+          }
+        </ul>
+        <p>{{ data.recalculatedStatReading }}</p>
+      </div>
+
+      <h3>Outliers excluídos do cálculo de padrão médio</h3>
+      <div class="outlier-list">
+        @for (o of data.excludedOutliers; track o.price + o.area + o.reason) {
+          <div class="outlier-item">
+            <span>{{ o.price }} · {{ o.area }} · {{ o.pricePerSqm }}</span>
+            <span class="outlier-item__reason">{{ o.reason }}</span>
+          </div>
+        }
+      </div>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Comparáveis ({{ data.comparables.length }})</mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div class="card-grid">
+        @for (c of data.comparables; track c.sourceLabel) {
+          <mat-card class="comparable-card" appearance="outlined">
+            <mat-card-content>
+              <div class="comparable-card__price">{{ c.price }}</div>
+              <div class="comparable-card__row"><span>Área</span><span>{{ c.area }}</span></div>
+              <div class="comparable-card__row"><span>Quartos</span><span>{{ c.bedrooms }}</span></div>
+              <div class="comparable-card__row"><span>R$/m²</span><span>{{ c.pricePerSqm }}</span></div>
+              @if (c.observation) {
+                <p class="comparable-card__observation">{{ c.observation }}</p>
+              }
+            </mat-card-content>
+            @if (c.sourceUrl) {
+              <mat-card-actions>
+                <a mat-stroked-button [href]="c.sourceUrl" target="_blank" rel="noopener">
+                  Ver anúncio original ({{ c.sourceLabel }})
+                </a>
+              </mat-card-actions>
+            }
+          </mat-card>
+        }
+      </div>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Estimativa do imóvel-alvo</mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div class="estimate-scenarios">
+        @for (s of data.targetEstimate.scenarios; track s.label) {
+          <div class="estimate-scenario">
+            <span class="estimate-scenario__value">{{ s.value }}</span>
+            <span class="estimate-scenario__label">{{ s.label }}</span>
+            <span class="estimate-scenario__detail">{{ s.detail }}</span>
+          </div>
+        }
+      </div>
+
+      <h3>Premissas usadas</h3>
+      <dl class="definition-list">
+        @for (p of data.targetEstimate.premises; track p.label) {
+          <div class="definition-list__row">
+            <dt>{{ p.label }}</dt>
+            <dd>{{ p.detail }}</dd>
+          </div>
+        }
+      </dl>
+
+      <p>{{ data.targetEstimate.calculationNote }}</p>
+      <p>{{ data.targetEstimate.rangeExplanation }}</p>
+      <p class="warning-note">{{ data.targetEstimate.preliminaryWarning }}</p>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Potencial de negócio — pousada</mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <p>{{ data.businessPotential.intro }}</p>
+
+      <h3>Considerações a favor</h3>
+      <ul>
+        @for (p of data.businessPotential.pros; track p) {
+          <li>{{ p }}</li>
+        }
+      </ul>
+
+      <h3>Pontos de atenção (due diligence)</h3>
+      <div class="caution-list">
+        @for (c of data.businessPotential.cautions; track c.title) {
+          <div class="caution-item">
+            <strong>{{ c.title }}:</strong> {{ c.detail }}
+          </div>
+        }
+      </div>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Próximos passos recomendados</mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <ol>
+        @for (step of data.nextSteps; track step.order) {
+          <li>{{ step.text }}</li>
+        }
+      </ol>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Apêndice — base completa ({{ data.appendix.length }})</mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div class="card-grid">
+        @for (item of data.appendix; track item.sourceLabel) {
+          <mat-card class="appendix-card" appearance="outlined">
+            <mat-card-content>
+              <div class="appendix-card__header">
+                <span class="appendix-card__price">{{ item.price }}</span>
+                @if (item.isOutlier) {
+                  <span class="outlier-badge">Outlier</span>
+                }
+              </div>
+              <div class="comparable-card__row"><span>Área total</span><span>{{ item.totalArea }}</span></div>
+              <div class="comparable-card__row"><span>Quartos</span><span>{{ item.bedrooms }}</span></div>
+            </mat-card-content>
+            <mat-card-actions>
+              <a mat-stroked-button [href]="item.sourceUrl" target="_blank" rel="noopener">
+                Ver anúncio ({{ item.sourceLabel }})
+              </a>
+            </mat-card-actions>
+          </mat-card>
+        }
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+
+  <footer class="report-footer">
+    <p>Relatório de Inteligência Imobiliária · Ilha de Aratuba, Vera Cruz-BA · {{ data.reportDate }}</p>
+  </footer>
+</main>
