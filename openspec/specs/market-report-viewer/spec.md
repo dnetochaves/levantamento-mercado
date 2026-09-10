@@ -21,6 +21,17 @@ O sistema SHALL apresentar todo o conteúdo do relatório em uma única página 
 - **WHEN** o usuário quer ir a uma seção específica do relatório (ex.: comparáveis, estimativa)
 - **THEN** o sistema permite localizar e expandir/visualizar essa seção dentro da mesma página, sem navegar para uma URL diferente
 
+### Requirement: Navegação rápida entre seções via âncoras
+O sistema SHALL oferecer, dentro da mesma página, atalhos de navegação por âncora para cada uma das seções do relatório (Metodologia, Estatísticas de Mercado, Comparáveis, Estimativa do Imóvel-Alvo, Potencial de Negócio, Próximos Passos, Apêndice), sem introduzir rotas do Angular Router nem sair da página única.
+
+#### Scenario: Pular direto para uma seção
+- **WHEN** o usuário aciona o atalho de uma seção específica
+- **THEN** a página rola até essa seção, sem navegar para uma URL diferente e sem recarregar o app
+
+#### Scenario: Atalhos continuam funcionando com seções fechadas
+- **WHEN** o usuário aciona o atalho de uma seção cujo painel do accordion está fechado
+- **THEN** o painel correspondente é aberto (ou a página rola até seu cabeçalho, permitindo abri-lo em seguida), em vez de rolar até um conteúdo invisível
+
 ### Requirement: Sumário executivo com KPIs
 O sistema SHALL exibir, em destaque no topo da página, os indicadores do sumário executivo do relatório: quantidade de anúncios levantados, faixa de valor de mercado por m², faixa de preço observada e a faixa de estimativa preliminar do imóvel-alvo.
 
@@ -45,6 +56,20 @@ O sistema SHALL exibir a tabela de imóveis comparáveis (preço, área, quartos
 #### Scenario: Comparável sem link disponível
 - **WHEN** um imóvel listado no relatório não possui link de fonte rastreável associado
 - **THEN** a linha correspondente é exibida sem um elemento de link clicável, sem quebrar a tabela nem exibir um link inválido
+
+### Requirement: Indicação de link externo para leitores de tela
+Todo link de anúncio (nas seções de Comparáveis e de Apêndice) que abre o portal de origem em uma nova aba SHALL comunicar essa abertura em nova aba a tecnologias assistivas (ex.: leitor de tela), além da indicação visual já existente.
+
+#### Scenario: Leitor de tela anuncia abertura em nova aba
+- **WHEN** um usuário de leitor de tela foca em um link de anúncio (Comparáveis ou Apêndice)
+- **THEN** a tecnologia assistiva anuncia que ativar o link abre o conteúdo em uma nova aba, fora do app
+
+### Requirement: Aviso sobre disponibilidade dos anúncios de terceiros
+O sistema SHALL exibir, próximo aos links de anúncio, um aviso informando que os anúncios são de terceiros (portais ZAP/Wimoveis) e podem ter sido removidos ou vendidos desde a coleta dos dados.
+
+#### Scenario: Aviso visível perto dos links de anúncio
+- **WHEN** o usuário visualiza uma seção que contém links de anúncio (Comparáveis ou Apêndice)
+- **THEN** um aviso é exibido informando que os anúncios são de terceiros e podem não estar mais disponíveis
 
 ### Requirement: Estimativa preliminar do imóvel-alvo
 O sistema SHALL exibir a faixa de estimativa preliminar de valor do imóvel-alvo (cenário conservador e cenário otimista) junto com as premissas usadas no cálculo (quartos, área construída inferida, localização, estado de conservação), deixando explícito que se trata de uma inferência sujeita a revisão.

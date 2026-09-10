@@ -33,38 +33,111 @@
     </ul>
   </section>
 
+  <nav class="section-nav" aria-label="Atalhos para seções do relatório">
+    <a class="section-nav__item" href="#secao-estimativa">Estimativa</a>
+    <a class="section-nav__item" href="#secao-potencial">Pousada</a>
+    <a class="section-nav__item" href="#secao-comparaveis">Comparáveis</a>
+    <a class="section-nav__item" href="#secao-estatisticas">Estatísticas</a>
+    <a class="section-nav__item" href="#secao-proximos-passos">Próximos passos</a>
+    <a class="section-nav__item" href="#secao-metodologia">Metodologia</a>
+    <a class="section-nav__item" href="#secao-apendice">Apêndice</a>
+  </nav>
+
   <mat-accordion multi class="report-accordion">
-    <mat-expansion-panel>
+    <mat-expansion-panel id="secao-estimativa" [expanded]="true">
       <mat-expansion-panel-header>
-        <mat-panel-title>Metodologia e fontes</mat-panel-title>
+        <mat-panel-title>Estimativa do imóvel-alvo</mat-panel-title>
       </mat-expansion-panel-header>
 
-      <h3>Critérios de busca</h3>
+      <div class="estimate-scenarios">
+        @for (s of data.targetEstimate.scenarios; track s.label) {
+          <div class="estimate-scenario">
+            <span class="estimate-scenario__value">{{ s.value }}</span>
+            <span class="estimate-scenario__label">{{ s.label }}</span>
+            <span class="estimate-scenario__detail">{{ s.detail }}</span>
+          </div>
+        }
+      </div>
+
+      <h3>Premissas usadas</h3>
       <dl class="definition-list">
-        @for (c of data.methodology.criteria; track c.label) {
+        @for (p of data.targetEstimate.premises; track p.label) {
           <div class="definition-list__row">
-            <dt>{{ c.label }}</dt>
-            <dd>{{ c.value }}</dd>
+            <dt>{{ p.label }}</dt>
+            <dd>{{ p.detail }}</dd>
           </div>
         }
       </dl>
 
-      <h3>Fontes consultadas</h3>
-      <ul>
-        @for (s of data.methodology.sources; track s.name) {
-          <li><strong>{{ s.name }}</strong> — {{ s.detail }}</li>
-        }
-      </ul>
-
-      <h3>Limitações declaradas</h3>
-      <ul>
-        @for (l of data.methodology.limitations; track l) {
-          <li>{{ l }}</li>
-        }
-      </ul>
+      <p>{{ data.targetEstimate.calculationNote }}</p>
+      <p>{{ data.targetEstimate.rangeExplanation }}</p>
+      <p class="warning-note">{{ data.targetEstimate.preliminaryWarning }}</p>
     </mat-expansion-panel>
 
-    <mat-expansion-panel>
+    <mat-expansion-panel id="secao-potencial" [expanded]="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Potencial de negócio — pousada</mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <p>{{ data.businessPotential.intro }}</p>
+
+      <h3>Considerações a favor</h3>
+      <ul>
+        @for (p of data.businessPotential.pros; track p) {
+          <li>{{ p }}</li>
+        }
+      </ul>
+
+      <h3>Pontos de atenção (due diligence)</h3>
+      <div class="caution-list">
+        @for (c of data.businessPotential.cautions; track c.title) {
+          <div class="caution-item">
+            <strong>{{ c.title }}:</strong> {{ c.detail }}
+          </div>
+        }
+      </div>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel id="secao-comparaveis">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Comparáveis ({{ data.comparables.length }})</mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <p class="panel-intro">Amostra usada no cálculo estatístico: imóveis de padrão médio com preço e área confirmados.</p>
+      <p class="panel-intro">Os anúncios são de terceiros (ZAP/Wimoveis) e podem já ter sido removidos ou vendidos desde a coleta dos dados.</p>
+
+      <div class="card-grid">
+        @for (c of data.comparables; track c.sourceLabel) {
+          <mat-card class="comparable-card" appearance="outlined">
+            <mat-card-content>
+              <div class="comparable-card__price">{{ c.price }}</div>
+              <div class="comparable-card__row"><span>Área</span><span>{{ c.area }}</span></div>
+              <div class="comparable-card__row"><span>Quartos</span><span>{{ c.bedrooms }}</span></div>
+              <div class="comparable-card__row"><span>R$/m²</span><span>{{ c.pricePerSqm }}</span></div>
+              @if (c.observation) {
+                <p class="comparable-card__observation">{{ c.observation }}</p>
+              }
+            </mat-card-content>
+            @if (c.sourceUrl) {
+              <mat-card-actions>
+                <a
+                  mat-stroked-button
+                  class="source-link"
+                  [href]="c.sourceUrl"
+                  target="_blank"
+                  rel="noopener"
+                  [attr.aria-label]="'Ver anúncio original no ' + c.sourceLabel + ', abre em nova aba'"
+                >
+                  Ver anúncio original ({{ c.sourceLabel }})
+                </a>
+              </mat-card-actions>
+            }
+          </mat-card>
+        }
+      </div>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel id="secao-estatisticas">
       <mat-expansion-panel-header>
         <mat-panel-title>Estatísticas de mercado</mat-panel-title>
       </mat-expansion-panel-header>
@@ -99,90 +172,7 @@
       </div>
     </mat-expansion-panel>
 
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>Comparáveis ({{ data.comparables.length }})</mat-panel-title>
-      </mat-expansion-panel-header>
-
-      <div class="card-grid">
-        @for (c of data.comparables; track c.sourceLabel) {
-          <mat-card class="comparable-card" appearance="outlined">
-            <mat-card-content>
-              <div class="comparable-card__price">{{ c.price }}</div>
-              <div class="comparable-card__row"><span>Área</span><span>{{ c.area }}</span></div>
-              <div class="comparable-card__row"><span>Quartos</span><span>{{ c.bedrooms }}</span></div>
-              <div class="comparable-card__row"><span>R$/m²</span><span>{{ c.pricePerSqm }}</span></div>
-              @if (c.observation) {
-                <p class="comparable-card__observation">{{ c.observation }}</p>
-              }
-            </mat-card-content>
-            @if (c.sourceUrl) {
-              <mat-card-actions>
-                <a mat-stroked-button [href]="c.sourceUrl" target="_blank" rel="noopener">
-                  Ver anúncio original ({{ c.sourceLabel }})
-                </a>
-              </mat-card-actions>
-            }
-          </mat-card>
-        }
-      </div>
-    </mat-expansion-panel>
-
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>Estimativa do imóvel-alvo</mat-panel-title>
-      </mat-expansion-panel-header>
-
-      <div class="estimate-scenarios">
-        @for (s of data.targetEstimate.scenarios; track s.label) {
-          <div class="estimate-scenario">
-            <span class="estimate-scenario__value">{{ s.value }}</span>
-            <span class="estimate-scenario__label">{{ s.label }}</span>
-            <span class="estimate-scenario__detail">{{ s.detail }}</span>
-          </div>
-        }
-      </div>
-
-      <h3>Premissas usadas</h3>
-      <dl class="definition-list">
-        @for (p of data.targetEstimate.premises; track p.label) {
-          <div class="definition-list__row">
-            <dt>{{ p.label }}</dt>
-            <dd>{{ p.detail }}</dd>
-          </div>
-        }
-      </dl>
-
-      <p>{{ data.targetEstimate.calculationNote }}</p>
-      <p>{{ data.targetEstimate.rangeExplanation }}</p>
-      <p class="warning-note">{{ data.targetEstimate.preliminaryWarning }}</p>
-    </mat-expansion-panel>
-
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>Potencial de negócio — pousada</mat-panel-title>
-      </mat-expansion-panel-header>
-
-      <p>{{ data.businessPotential.intro }}</p>
-
-      <h3>Considerações a favor</h3>
-      <ul>
-        @for (p of data.businessPotential.pros; track p) {
-          <li>{{ p }}</li>
-        }
-      </ul>
-
-      <h3>Pontos de atenção (due diligence)</h3>
-      <div class="caution-list">
-        @for (c of data.businessPotential.cautions; track c.title) {
-          <div class="caution-item">
-            <strong>{{ c.title }}:</strong> {{ c.detail }}
-          </div>
-        }
-      </div>
-    </mat-expansion-panel>
-
-    <mat-expansion-panel>
+    <mat-expansion-panel id="secao-proximos-passos">
       <mat-expansion-panel-header>
         <mat-panel-title>Próximos passos recomendados</mat-panel-title>
       </mat-expansion-panel-header>
@@ -194,10 +184,43 @@
       </ol>
     </mat-expansion-panel>
 
-    <mat-expansion-panel>
+    <mat-expansion-panel id="secao-metodologia">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Metodologia e fontes</mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <h3>Critérios de busca</h3>
+      <dl class="definition-list">
+        @for (c of data.methodology.criteria; track c.label) {
+          <div class="definition-list__row">
+            <dt>{{ c.label }}</dt>
+            <dd>{{ c.value }}</dd>
+          </div>
+        }
+      </dl>
+
+      <h3>Fontes consultadas</h3>
+      <ul>
+        @for (s of data.methodology.sources; track s.name) {
+          <li><strong>{{ s.name }}</strong> — {{ s.detail }}</li>
+        }
+      </ul>
+
+      <h3>Limitações declaradas</h3>
+      <ul>
+        @for (l of data.methodology.limitations; track l) {
+          <li>{{ l }}</li>
+        }
+      </ul>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel id="secao-apendice">
       <mat-expansion-panel-header>
         <mat-panel-title>Apêndice — base completa ({{ data.appendix.length }})</mat-panel-title>
       </mat-expansion-panel-header>
+
+      <p class="panel-intro">Todos os imóveis levantados nesta rodada (ZAP + Wimoveis), incluindo os que foram tratados como outliers e excluídos do cálculo estatístico da seção Estatísticas de mercado.</p>
+      <p class="panel-intro">Os anúncios são de terceiros (ZAP/Wimoveis) e podem já ter sido removidos ou vendidos desde a coleta dos dados.</p>
 
       <div class="card-grid">
         @for (item of data.appendix; track item.sourceLabel) {
@@ -213,7 +236,14 @@
               <div class="comparable-card__row"><span>Quartos</span><span>{{ item.bedrooms }}</span></div>
             </mat-card-content>
             <mat-card-actions>
-              <a mat-stroked-button [href]="item.sourceUrl" target="_blank" rel="noopener">
+              <a
+                mat-stroked-button
+                class="source-link"
+                [href]="item.sourceUrl"
+                target="_blank"
+                rel="noopener"
+                [attr.aria-label]="'Ver anúncio no ' + item.sourceLabel + ', abre em nova aba'"
+              >
                 Ver anúncio ({{ item.sourceLabel }})
               </a>
             </mat-card-actions>
@@ -224,6 +254,6 @@
   </mat-accordion>
 
   <footer class="report-footer">
-    <p>Relatório de Inteligência Imobiliária · Ilha de Aratuba, Vera Cruz-BA · {{ data.reportDate }}</p>
+    <p>Relatório de Inteligência Imobiliária · Ilha de Aratuba, Vera Cruz-BA</p>
   </footer>
 </main>

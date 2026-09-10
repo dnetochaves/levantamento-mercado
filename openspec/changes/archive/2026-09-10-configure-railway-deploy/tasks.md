@@ -14,4 +14,4 @@
 ## 3. Verificação final
 
 - [x] 3.1 Revisar o `README.md` e adicionar uma nota curta explicando que o `package.json`/`.node-version` da raiz existem só para o deploy no Railway builder o app de `frontend/`, para não confundir quem abrir o repositório depois
-- [ ] 3.2 Fazer commit de todos os arquivos novos (`package.json`, `package-lock.json`, `.node-version`, `.gitignore` da raiz, nota no README) e push para `main`, e confirmar no painel do Railway que o novo deploy builda e fica com status ativo/healthy, respondendo na URL pública atribuída
+- [x] 3.2 Fazer commit de todos os arquivos novos (`package.json`, `package-lock.json`, `.node-version`, `.gitignore` da raiz, nota no README) e push para `main`, e confirmar no painel do Railway que o novo deploy builda e fica com status ativo/healthy, respondendo na URL pública atribuída — commit `8bb0c6a` enviado para `origin/main`, deploy confirmado ativo no Railway pelo usuário
